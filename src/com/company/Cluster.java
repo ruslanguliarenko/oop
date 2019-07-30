@@ -1,5 +1,7 @@
 package com.company;
 
+import com.company.exception.ServerNotFoundException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -28,12 +30,15 @@ public class Cluster implements Fallible{
     }
 
     @Override
-    public boolean isFailed(int serverNumber, int nodeNumber) {
+    public boolean isFailed(int serverNumber, int nodeNumber) throws ServerNotFoundException {
+        if(serverNumber < servers.size()){
+            Server server = servers.get(serverNumber);
+            Node node = server.getNode(nodeNumber);
 
-        Server server = servers.get(serverNumber);
-        Node node = server.getNode(nodeNumber);
-
-        return node.isFailed();
+            return node.isFailed();
+        }else {
+            throw new ServerNotFoundException("Server " + serverNumber + " is not found!");
+        }
     }
 
     private ArrayList<Server> createServers(int amount){

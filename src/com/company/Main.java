@@ -1,5 +1,7 @@
 package com.company;
 
+import com.company.exception.ServerNotFoundException;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -7,6 +9,15 @@ public class Main {
         FailSearchEngine failSearchEngine = new FailSearchEngine();
 
         cluster.sendMessage();
-        System.out.println(failSearchEngine.search(cluster));
+
+        try {
+
+            System.out.println(failSearchEngine.search(cluster));
+
+        }catch (ServerNotFoundException e){
+
+            System.out.println(e.getMessage());
+
+        }
     }
 }

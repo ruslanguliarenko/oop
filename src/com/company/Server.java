@@ -1,5 +1,7 @@
 package com.company;
 
+import com.company.exception.NodeNotFoundException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +32,11 @@ public class Server {
     }
 
     public Node getNode(int index) {
-        return nodeList.get(index);
+        if(nodeList.size() > index){
+            return nodeList.get(index);
+        }else{
+            throw new NodeNotFoundException("Node " + index + " is not found!");
+        }
     }
 
     public int getNumber() {

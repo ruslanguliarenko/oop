@@ -1,5 +1,7 @@
 package com.company;
 
+import com.company.exception.ServerNotFoundException;
+
 import java.util.List;
 
 public class FailSearchEngine {
@@ -18,22 +20,25 @@ public class FailSearchEngine {
 
     private int searchFailedServer(int amountServer, Cluster cluster, int count)
     {
-        int numberServer = amountServer/2 + count;
-        int numberNode = cluster.getServers().get(numberServer).getAmountNode() - 1;
+        try {
+            int numberServer = amountServer / 2 + count;
+            int numberNode = cluster.getServers().get(numberServer).getAmountNode() - 1;
 
-        if(numberServer == 0){
-            return numberServer;
-        }
-
-        if(cluster.isFailed(numberServer, numberNode)){
-            if(!cluster.isFailed(numberServer-1, numberNode-1)){
+            if (numberServer == 0) {
                 return numberServer;
             }
-            else{
-                return searchFailedServer(numberServer - count, cluster, count);
+
+            if (cluster.isFailed(numberServer, numberNode)) {
+                if (!cluster.isFailed(numberServer - 1, numberNode - 1)) {
+                    return numberServer;
+                } else {
+                    return searchFailedServer(numberServer - count, cluster, count);
+                }
+            } else {
+                return searchFailedServer(numberServer - count, cluster, count + numberServer);
             }
-        }else{
-            return searchFailedServer(numberServer -count, cluster, count+numberServer);
+        }catch (IndexOutOfBoundsException e){
+            throw new ServerNotFoundException("All servers works", e);
         }
     }
 
