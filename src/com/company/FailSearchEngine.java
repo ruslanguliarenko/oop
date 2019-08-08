@@ -7,10 +7,10 @@ import java.util.List;
 public class FailSearchEngine {
 
     public String search(Cluster cluster){
-        List<Server> servers =  cluster.getServers();
+        List<Optional<Server>> servers =  cluster.getServers();
 
         int numberFailedServer = searchFailedServer(servers.size(), cluster, 0);
-        int numberFailedNode = searchFailedNode(servers.get(numberFailedServer).getAmountNode(), cluster, 0, numberFailedServer);
+        int numberFailedNode = searchFailedNode(servers.get(numberFailedServer).getValue().getAmountNode(), cluster, 0, numberFailedServer);
 
         return numberFailedServer + " " + numberFailedNode;
 
@@ -22,7 +22,8 @@ public class FailSearchEngine {
     {
         try {
             int numberServer = amountServer / 2 + count;
-            int numberNode = cluster.getServers().get(numberServer).getAmountNode() - 1;
+            int numberNode = cluster.getServers().get(numberServer).getValue().getNodeList()
+                    .stream().findFirst().get().getValue().getNumber();
 
             if (numberServer == 0) {
                 return numberServer;

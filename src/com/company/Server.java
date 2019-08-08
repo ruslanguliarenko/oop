@@ -4,34 +4,37 @@ import com.company.exception.NodeNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Server {
 
     private int number;
-    private List<Node> nodeList;
+    private List<Optional<Node>> nodeList;
 
     public Server(int number, int amountNode){
         this.number = number;
         nodeList = createNode(amountNode);
     }
 
-    private ArrayList<Node> createNode(int amount){
-        ArrayList<Node> resultNode = new ArrayList<>();
+    private ArrayList<Optional<Node>> createNode(int amount){
+        ArrayList<Optional<Node>> resultNode = new ArrayList<>();
 
         for(int i = 0;i<amount; i++){
-            resultNode.add(new Node(i));
+            if(new Random().nextBoolean()) {
+                resultNode.add(new Optional<>(new Node(i)));
+            }
         }
 
         return resultNode;
     }
 
     public void setAllNodeFailed(){
-        for(Node node : nodeList){
-            node.setFailed(true);
+        for(Optional<Node> node : nodeList){
+            node.getValue().setFailed(true);
         }
     }
 
-    public Node getNode(int index) {
+    public Optional<Node> getNode(int index) {
         if(nodeList.size() > index){
             return nodeList.get(index);
         }else{
@@ -45,5 +48,9 @@ public class Server {
 
     public int getAmountNode() {
         return nodeList.size();
+    }
+
+    public List<Optional<Node>> getNodeList() {
+        return nodeList;
     }
 }
